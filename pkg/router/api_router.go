@@ -1,9 +1,9 @@
 package router
 
 import (
+	"github.com/Fairuzzzzz/fiber-boostrap/app/controllers"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
-	"github.com/kooroshh/fiber-boostrap/app/controllers"
 )
 
 type ApiRouter struct{}
@@ -19,6 +19,7 @@ func (h ApiRouter) InstallRouter(app *fiber.App) {
 	userGroup := app.Group("/user")
 	userGroupV1 := userGroup.Group("/v1")
 	userGroupV1.Post("/register", controllers.Register)
+	userGroupV1.Post("/login", controllers.Login)
 }
 
 func NewApiRouter() *ApiRouter {

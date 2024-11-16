@@ -1,14 +1,14 @@
 package bootstrap
 
 import (
+	"github.com/Fairuzzzzz/fiber-boostrap/pkg/database"
+	"github.com/Fairuzzzzz/fiber-boostrap/pkg/env"
+	"github.com/Fairuzzzzz/fiber-boostrap/pkg/router"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/monitor"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/template/html/v2"
-	"github.com/kooroshh/fiber-boostrap/pkg/database"
-	"github.com/kooroshh/fiber-boostrap/pkg/env"
-	"github.com/kooroshh/fiber-boostrap/pkg/router"
 )
 
 func NewApplication() *fiber.App {
