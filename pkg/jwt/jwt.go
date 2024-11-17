@@ -26,6 +26,7 @@ func GenerateToken(
 	ctx context.Context,
 	username, fullname string,
 	tokenType string,
+	now time.Time,
 ) (string, error) {
 	secret := []byte(jwtSecret)
 

@@ -74,6 +74,7 @@ func Register(ctx *fiber.Ctx) error {
 }
 
 func Login(ctx *fiber.Ctx) error {
+	now := time.Now()
 	loginReq := new(models.LoginRequest)
 	loginRes := models.LoginResponse{}
 
@@ -125,7 +126,7 @@ func Login(ctx *fiber.Ctx) error {
 		)
 	}
 
-	token, err := jwt.GenerateToken(ctx.Context(), user.Username, user.FullName, "token")
+	token, err := jwt.GenerateToken(ctx.Context(), user.Username, user.FullName, "token", now)
 	if err != nil {
 		errResponse := fmt.Errorf("failed to generate token: %v", err)
 		fmt.Println(errResponse)
@@ -142,6 +143,7 @@ func Login(ctx *fiber.Ctx) error {
 		user.Username,
 		user.FullName,
 		"refresh_token",
+		now,
 	)
 	if err != nil {
 		errResponse := fmt.Errorf("failed to generate token: %v", err)
@@ -196,4 +198,45 @@ func Logout(ctx *fiber.Ctx) error {
 		)
 	}
 	return ctx.SendStatus(fiber.StatusOK)
+}
+
+func RefreshToken(ctx *fiber.Ctx) error {
+	refreshToken := ctx.Get("Authorization")
+
+	now := time.Now()
+	username := ctx.Locals("username").(string)
+	fullName := ctx.Locals("full_name").(string)
+
+	token, err := jwt.GenerateToken(ctx.Context(), username, fullName, "token", now)
+	if err != nil {
+		errResponse := fmt.Errorf("failed to generate token: %v", err)
+		fmt.Println(errResponse)
+		return response.SendFailureResponse(
+			ctx,
+			fiber.StatusInternalServerError,
+			errResponse.Error(),
+			nil,
+		)
+	}
+
+	err = repository.UpdateUserSessionToken(
+		ctx.Context(),
+		token,
+		now.Add(jwt.MapTokenType["token"]),
+		refreshToken,
+	)
+	if err != nil {
+		errResponse := fmt.Errorf("failed to generate token: %v", err)
+		fmt.Println(errResponse)
+		return response.SendFailureResponse(
+			ctx,
+			fiber.StatusInternalServerError,
+			errResponse.Error(),
+			nil,
+		)
+	}
+
+	return response.SendSuccessResponse(ctx, fiber.Map{
+		"token": token,
+	})
 }

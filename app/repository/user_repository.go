@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"time"
 
 	"github.com/Fairuzzzzz/fiber-boostrap/app/models"
 	"github.com/Fairuzzzzz/fiber-boostrap/pkg/database"
@@ -17,6 +18,20 @@ func InsertNewUserSession(ctx context.Context, user *models.UserSession) error {
 
 func DeleteUserSession(ctx context.Context, token string) error {
 	return database.DB.Exec("DELETE from user_sessions WHERE token = ?", token).Error
+}
+
+func UpdateUserSessionToken(
+	ctx context.Context,
+	token string,
+	tokenExpired time.Time,
+	refreshToken string,
+) error {
+	return database.DB.Exec(
+		"UPDATE user_sessions SET token = ?, token_expired = ? WHERE refresh_token = ?",
+		token,
+		tokenExpired,
+		refreshToken,
+	).Error
 }
 
 func GetUserSession(ctx context.Context, token string) (models.UserSession, error) {
