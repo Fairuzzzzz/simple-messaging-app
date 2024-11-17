@@ -131,7 +131,7 @@ func Login(ctx *fiber.Ctx) error {
 		fmt.Println(errResponse)
 		return response.SendFailureResponse(
 			ctx,
-			fiber.StatusNotFound,
+			fiber.StatusInternalServerError,
 			errResponse.Error(),
 			nil,
 		)
@@ -148,7 +148,7 @@ func Login(ctx *fiber.Ctx) error {
 		fmt.Println(errResponse)
 		return response.SendFailureResponse(
 			ctx,
-			fiber.StatusNotFound,
+			fiber.StatusInternalServerError,
 			errResponse.Error(),
 			nil,
 		)
@@ -168,7 +168,7 @@ func Login(ctx *fiber.Ctx) error {
 		fmt.Println(errResponse)
 		return response.SendFailureResponse(
 			ctx,
-			fiber.StatusNotFound,
+			fiber.StatusInternalServerError,
 			errResponse.Error(),
 			nil,
 		)
@@ -180,4 +180,20 @@ func Login(ctx *fiber.Ctx) error {
 	loginRes.RefreshToken = refreshToken
 
 	return response.SendSuccessResponse(ctx, loginRes)
+}
+
+func Logout(ctx *fiber.Ctx) error {
+	token := ctx.Get("Authorization")
+	err := repository.DeleteUserSession(ctx.Context(), token)
+	if err != nil {
+		errResponse := fmt.Errorf("failed to delete user session: %v", err)
+		fmt.Println(errResponse)
+		return response.SendFailureResponse(
+			ctx,
+			fiber.StatusInternalServerError,
+			errResponse.Error(),
+			nil,
+		)
+	}
+	return ctx.SendStatus(fiber.StatusOK)
 }
