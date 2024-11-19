@@ -1,6 +1,7 @@
 package bootstrap
 
 import (
+	"github.com/Fairuzzzzz/fiber-boostrap/app/ws"
 	"github.com/Fairuzzzzz/fiber-boostrap/pkg/database"
 	"github.com/Fairuzzzzz/fiber-boostrap/pkg/env"
 	"github.com/Fairuzzzzz/fiber-boostrap/pkg/router"
@@ -20,6 +21,8 @@ func NewApplication() *fiber.App {
 	app.Use(logger.New())
 	app.Get("/dashboard", monitor.New())
 	router.InstallRouter(app)
+
+	go ws.ServeWSMessaging(app)
 
 	return app
 }
