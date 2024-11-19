@@ -1,23 +1,22 @@
 package ws
 
 import (
+	"context"
 	"fmt"
 	"log"
+	"time"
 
+	"github.com/Fairuzzzzz/fiber-boostrap/app/models"
+	"github.com/Fairuzzzzz/fiber-boostrap/app/repository"
 	"github.com/Fairuzzzzz/fiber-boostrap/pkg/env"
 	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
 )
 
-type MessagePayload struct {
-	From    string `json:"from"`
-	Message string `json:"message"`
-}
-
 func ServeWSMessaging(app *fiber.App) {
 	clients := make(map[*websocket.Conn]bool)
 
-	broadcast := make(chan MessagePayload)
+	broadcast := make(chan models.MessagePayload)
 
 	app.Get("/message/v1/send", websocket.New(func(c *websocket.Conn) {
 		defer func() {
@@ -27,10 +26,15 @@ func ServeWSMessaging(app *fiber.App) {
 
 		clients[c] = true
 		for {
-			var msg MessagePayload
+			var msg models.MessagePayload
 			if err := c.ReadJSON(&msg); err != nil {
 				fmt.Println("error payload")
 				break
+			}
+			msg.Date = time.Now()
+			err := repository.InsertNewMessage(context.Background(), msg)
+			if err != nil {
+				fmt.Println(err)
 			}
 			broadcast <- msg
 		}

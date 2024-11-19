@@ -1,11 +1,14 @@
 package database
 
 import (
+	"context"
 	"fmt"
 	"log"
 
 	"github.com/Fairuzzzzz/fiber-boostrap/app/models"
 	"github.com/Fairuzzzzz/fiber-boostrap/pkg/env"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -34,4 +37,17 @@ func SetupDatabase() {
 	}
 
 	fmt.Println("Database connected")
+}
+
+func SetupMongoDB() {
+	uri := env.GetEnv("MONGOD_URI", "")
+	client, err := mongo.Connect(context.TODO(), options.Client().
+		ApplyURI(uri))
+	if err != nil {
+		panic(err)
+	}
+	coll := client.Database("message").Collection("message_history")
+	MongoDB = coll
+
+	fmt.Println("successfully connected MongoDB")
 }
