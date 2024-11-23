@@ -33,8 +33,8 @@ func MiddlewareValidateAuth(ctx *fiber.Ctx) error {
 		return response.SendFailureResponse(ctx, fiber.StatusUnauthorized, "Unauthorized", nil)
 	}
 
-	ctx.Set("username", claim.Username)
-	ctx.Set("full_name", claim.Fullname)
+	ctx.Locals("username", claim.Username)
+	ctx.Locals("full_name", claim.Fullname)
 
 	return ctx.Next()
 }

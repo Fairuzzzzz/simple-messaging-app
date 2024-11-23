@@ -197,7 +197,7 @@ func Logout(ctx *fiber.Ctx) error {
 			nil,
 		)
 	}
-	return ctx.SendStatus(fiber.StatusOK)
+	return response.SendSuccessResponse(ctx, nil)
 }
 
 func RefreshToken(ctx *fiber.Ctx) error {

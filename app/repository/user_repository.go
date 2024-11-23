@@ -17,7 +17,7 @@ func InsertNewUserSession(ctx context.Context, user *models.UserSession) error {
 }
 
 func DeleteUserSession(ctx context.Context, token string) error {
-	return database.DB.Exec("DELETE from user_sessions WHERE token = ?", token).Error
+	return database.DB.Exec("DELETE FROM user_sessions WHERE token = ?", token).Error
 }
 
 func UpdateUserSessionToken(
