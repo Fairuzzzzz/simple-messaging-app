@@ -1,6 +1,10 @@
 package bootstrap
 
 import (
+	"io"
+	"log"
+	"os"
+
 	"github.com/Fairuzzzzz/fiber-boostrap/app/ws"
 	"github.com/Fairuzzzzz/fiber-boostrap/pkg/database"
 	"github.com/Fairuzzzzz/fiber-boostrap/pkg/env"
@@ -14,6 +18,7 @@ import (
 
 func NewApplication() *fiber.App {
 	env.SetupEnvFile()
+	SetupLogfile()
 	database.SetupDatabase()
 	database.SetupMongoDB()
 	engine := html.New("./views", ".html")
@@ -26,4 +31,18 @@ func NewApplication() *fiber.App {
 	go ws.ServeWSMessaging(app)
 
 	return app
+}
+
+func SetupLogfile() {
+	logfile, err := os.OpenFile(
+		"./logs/simple_messaging_app.log",
+		os.O_CREATE|os.O_APPEND|os.O_RDWR,
+		0666,
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	mw := io.MultiWriter(os.Stdout, logfile)
+	log.SetOutput(mw)
 }

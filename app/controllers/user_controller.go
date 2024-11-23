@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/Fairuzzzzz/fiber-boostrap/app/models"
@@ -17,7 +18,7 @@ func Register(ctx *fiber.Ctx) error {
 	err := ctx.BodyParser(user)
 	if err != nil {
 		errResponse := fmt.Errorf("failed to parsing request: %v", err)
-		fmt.Println(errResponse)
+		log.Println(errResponse)
 		return response.SendFailureResponse(
 			ctx,
 			fiber.StatusInternalServerError,
@@ -29,7 +30,7 @@ func Register(ctx *fiber.Ctx) error {
 	err = user.Validate()
 	if err != nil {
 		errResponse := fmt.Errorf("failed to validate user: %v", err)
-		fmt.Println(errResponse)
+		log.Println(errResponse)
 		return response.SendFailureResponse(
 			ctx,
 			fiber.StatusInternalServerError,
@@ -41,7 +42,7 @@ func Register(ctx *fiber.Ctx) error {
 	hashPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
 		errResponse := fmt.Errorf("failed to encrypt password: %v", err)
-		fmt.Println(errResponse)
+		log.Println(errResponse)
 		return response.SendFailureResponse(
 			ctx,
 			fiber.StatusInternalServerError,
@@ -55,7 +56,7 @@ func Register(ctx *fiber.Ctx) error {
 	err = repository.InsertNewUser(ctx.Context(), user)
 	if err != nil {
 		errResponse := fmt.Errorf("failed to insert new user: %v", err)
-		fmt.Println(errResponse)
+		log.Println(errResponse)
 		return response.SendFailureResponse(
 			ctx,
 			fiber.StatusInternalServerError,
@@ -81,7 +82,7 @@ func Login(ctx *fiber.Ctx) error {
 	err := ctx.BodyParser(loginReq)
 	if err != nil {
 		errResponse := fmt.Errorf("failed to parsing request: %v", err)
-		fmt.Println(errResponse)
+		log.Println(errResponse)
 		return response.SendFailureResponse(
 			ctx,
 			fiber.StatusInternalServerError,
@@ -93,7 +94,7 @@ func Login(ctx *fiber.Ctx) error {
 	err = loginReq.Validate()
 	if err != nil {
 		errResponse := fmt.Errorf("failed to validate login request: %v", err)
-		fmt.Println(errResponse)
+		log.Println(errResponse)
 		return response.SendFailureResponse(
 			ctx,
 			fiber.StatusInternalServerError,
@@ -105,7 +106,7 @@ func Login(ctx *fiber.Ctx) error {
 	user, err := repository.GetUserByUsername(ctx.Context(), loginReq.Username)
 	if err != nil {
 		errResponse := fmt.Errorf("failed to get username: %v", err)
-		fmt.Println(errResponse)
+		log.Println(errResponse)
 		return response.SendFailureResponse(
 			ctx,
 			fiber.StatusNotFound,
@@ -117,7 +118,7 @@ func Login(ctx *fiber.Ctx) error {
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(loginReq.Password))
 	if err != nil {
 		errResponse := fmt.Errorf("failed to get username: %v", err)
-		fmt.Println(errResponse)
+		log.Println(errResponse)
 		return response.SendFailureResponse(
 			ctx,
 			fiber.StatusNotFound,
@@ -129,7 +130,7 @@ func Login(ctx *fiber.Ctx) error {
 	token, err := jwt.GenerateToken(ctx.Context(), user.Username, user.FullName, "token", now)
 	if err != nil {
 		errResponse := fmt.Errorf("failed to generate token: %v", err)
-		fmt.Println(errResponse)
+		log.Println(errResponse)
 		return response.SendFailureResponse(
 			ctx,
 			fiber.StatusInternalServerError,
@@ -147,7 +148,7 @@ func Login(ctx *fiber.Ctx) error {
 	)
 	if err != nil {
 		errResponse := fmt.Errorf("failed to generate token: %v", err)
-		fmt.Println(errResponse)
+		log.Println(errResponse)
 		return response.SendFailureResponse(
 			ctx,
 			fiber.StatusInternalServerError,
@@ -167,7 +168,7 @@ func Login(ctx *fiber.Ctx) error {
 	err = repository.InsertNewUserSession(ctx.Context(), userSession)
 	if err != nil {
 		errResponse := fmt.Errorf("failed to insert user session: %v", err)
-		fmt.Println(errResponse)
+		log.Println(errResponse)
 		return response.SendFailureResponse(
 			ctx,
 			fiber.StatusInternalServerError,
@@ -189,7 +190,7 @@ func Logout(ctx *fiber.Ctx) error {
 	err := repository.DeleteUserSession(ctx.Context(), token)
 	if err != nil {
 		errResponse := fmt.Errorf("failed to delete user session: %v", err)
-		fmt.Println(errResponse)
+		log.Println(errResponse)
 		return response.SendFailureResponse(
 			ctx,
 			fiber.StatusInternalServerError,
@@ -210,7 +211,7 @@ func RefreshToken(ctx *fiber.Ctx) error {
 	token, err := jwt.GenerateToken(ctx.Context(), username, fullName, "token", now)
 	if err != nil {
 		errResponse := fmt.Errorf("failed to generate token: %v", err)
-		fmt.Println(errResponse)
+		log.Println(errResponse)
 		return response.SendFailureResponse(
 			ctx,
 			fiber.StatusInternalServerError,
@@ -227,7 +228,7 @@ func RefreshToken(ctx *fiber.Ctx) error {
 	)
 	if err != nil {
 		errResponse := fmt.Errorf("failed to generate token: %v", err)
-		fmt.Println(errResponse)
+		log.Println(errResponse)
 		return response.SendFailureResponse(
 			ctx,
 			fiber.StatusInternalServerError,

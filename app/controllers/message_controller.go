@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"fmt"
+	"log"
 
 	"github.com/Fairuzzzzz/fiber-boostrap/app/repository"
 	"github.com/Fairuzzzzz/fiber-boostrap/pkg/response"
@@ -11,7 +11,7 @@ import (
 func GetHistory(ctx *fiber.Ctx) error {
 	resp, err := repository.GetAllMessage(ctx.Context())
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return response.SendFailureResponse(
 			ctx,
 			fiber.StatusInternalServerError,
