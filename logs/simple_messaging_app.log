@@ -2,3 +2,8 @@
 2024/11/23 20:59:56 successfully connected MongoDB
 2024/11/23 21:57:59 Database connected
 2024/11/23 21:58:01 successfully connected MongoDB
+2024/11/24 20:34:40 Database connected
+2024/11/24 20:34:40 successfully connected MongoDB
+2024/11/24 20:36:55 failed to find message: server selection error: server selection timeout, current topology: { Type: ReplicaSetNoPrimary, Servers: [{ Addr: messagingapp-shard-00-01.pov8f.mongodb.net:27017, Type: Unknown, Last error: remote error: tls: internal error }, { Addr: messagingapp-shard-00-02.pov8f.mongodb.net:27017, Type: Unknown, Last error: remote error: tls: internal error }, { Addr: messagingapp-shard-00-00.pov8f.mongodb.net:27017, Type: Unknown, Last error: remote error: tls: internal error }, ] }
+2024/11/24 21:30:20 Database connected
+2024/11/24 21:30:21 successfully connected MongoDB

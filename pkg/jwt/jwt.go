@@ -7,6 +7,7 @@ import (
 
 	"github.com/Fairuzzzzz/fiber-boostrap/pkg/env"
 	"github.com/golang-jwt/jwt/v5"
+	"go.elastic.co/apm"
 )
 
 type ClaimToken struct {
@@ -28,6 +29,9 @@ func GenerateToken(
 	tokenType string,
 	now time.Time,
 ) (string, error) {
+	span, _ := apm.StartSpan(ctx, "GenerateToken", "jwt")
+	defer span.End()
+
 	claimToken := ClaimToken{
 		Username: username,
 		Fullname: fullname,
@@ -48,6 +52,9 @@ func GenerateToken(
 }
 
 func ValidateToken(ctx context.Context, token string) (*ClaimToken, error) {
+	span, _ := apm.StartSpan(ctx, "ValidateToken", "jwt")
+	defer span.End()
+
 	var (
 		claimToken *ClaimToken
 		ok         bool
